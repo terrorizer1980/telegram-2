@@ -10,18 +10,21 @@ import useLang from '../../../hooks/useLang';
 import Menu from '../../ui/Menu';
 import MenuItem from '../../ui/MenuItem';
 
+import tonGemPath from '../../../assets/ton-gem.png';
 import './AttachMenu.scss';
 
 export type OwnProps = {
   isOpen: boolean;
   allowedAttachmentOptions: IAllowedAttachmentOptions;
+  canSendTons: boolean;
   onFileSelect: (files: File[], isQuick: boolean) => void;
   onPollCreate: () => void;
+  onSendTons: () => void;
   onClose: () => void;
 };
 
 const AttachMenu: FC<OwnProps> = ({
-  isOpen, allowedAttachmentOptions, onFileSelect, onPollCreate, onClose,
+  isOpen, canSendTons, allowedAttachmentOptions, onFileSelect, onPollCreate, onSendTons, onClose,
 }) => {
   const [handleMouseEnter, handleMouseLeave] = useMouseInside(isOpen, onClose);
 
@@ -78,6 +81,9 @@ const AttachMenu: FC<OwnProps> = ({
       )}
       {canAttachPolls && (
         <MenuItem icon="poll" onClick={onPollCreate}>{lang('Poll')}</MenuItem>
+      )}
+      {canSendTons && (
+        <MenuItem iconImg={tonGemPath} onClick={onSendTons}>Send TON Coins</MenuItem>
       )}
     </Menu>
   );

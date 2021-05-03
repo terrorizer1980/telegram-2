@@ -3,15 +3,18 @@ import React, {
 } from '../../lib/teact/teact';
 import { withGlobal } from '../../lib/teact/teactn';
 
+import { GlobalActions } from '../../global/types';
 import { ApiUser, ApiMessage, ApiChat } from '../../api/types';
 import { FocusDirection } from '../../types';
 
+import { TON_MSG_ADDRESS_RESPONSE } from '../../config';
 import {
   selectUser,
   selectChatMessage,
   selectIsMessageFocused,
   selectChat,
 } from '../../modules/selectors';
+import { pick } from '../../util/iteratees';
 import { isChatChannel } from '../../modules/helpers';
 import buildClassName from '../../util/buildClassName';
 import renderText from '../common/helpers/renderText';
@@ -48,7 +51,9 @@ type StateProps = {
 
 const APPEARANCE_DELAY = 10;
 
-const ActionMessage: FC<OwnProps & StateProps> = ({
+type DispatchProps = Pick<GlobalActions, 'shareTonAddress' | 'saveTonAddress'>;
+
+const ActionMessage: FC<OwnProps & StateProps & DispatchProps> = ({
   message,
   observeIntersection,
   isEmbedded,
@@ -62,6 +67,8 @@ const ActionMessage: FC<OwnProps & StateProps> = ({
   isFocused,
   focusDirection,
   noFocusHighlight,
+  shareTonAddress,
+  saveTonAddress,
 }) => {
   // eslint-disable-next-line no-null/no-null
   const ref = useRef<HTMLDivElement>(null);
@@ -88,6 +95,20 @@ const ActionMessage: FC<OwnProps & StateProps> = ({
       ? targetUserIds.map((userId) => usersById?.[userId]).filter<ApiUser>(Boolean as any)
       : undefined;
   }, [targetUserIds, usersById]);
+
+  useEffect(() => {
+    if (!message.isOutgoing && message.content.action!.type === 'tonAddressRequest') {
+      shareTonAddress({
+        requesterId: message.senderId,
+        requestedAt: message.date * 1000,
+      });
+    } else if (!message.isOutgoing && message.content.action!.type === 'tonAddressResponse') {
+      saveTonAddress({
+        chatId: message.senderId,
+        address: message.content.text!.text.replace(TON_MSG_ADDRESS_RESPONSE, ''),
+      });
+    }
+  }, [message, saveTonAddress, shareTonAddress]);
 
   const content = renderActionMessageText(
     lang,
@@ -173,5 +194,8 @@ export default memo(withGlobal<OwnProps>(
       isFocused,
       ...(isFocused && { focusDirection, noFocusHighlight }),
     };
+  },
+  (setGlobal, actions) => {
+    return pick(actions, ['shareTonAddress', 'saveTonAddress']);
   },
 )(ActionMessage));

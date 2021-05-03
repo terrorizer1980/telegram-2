@@ -28,6 +28,7 @@ export { default as MobileSearch } from '../components/middle/MobileSearch';
 
 export { default as AttachmentModal } from '../components/middle/composer/AttachmentModal';
 export { default as PollModal } from '../components/middle/composer/PollModal';
+export { default as TonModal } from '../components/middle/composer/TonModal';
 export { default as SymbolMenu } from '../components/middle/composer/SymbolMenu';
 export { default as AttachMenu } from '../components/middle/composer/AttachMenu';
 export { default as BotCommandTooltip } from '../components/middle/composer/BotCommandTooltip';

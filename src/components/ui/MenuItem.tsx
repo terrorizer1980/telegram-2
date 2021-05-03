@@ -9,6 +9,7 @@ type OnClickHandler = (e: React.SyntheticEvent<HTMLDivElement | HTMLAnchorElemen
 
 type OwnProps = {
   icon?: string;
+  iconImg?: string;
   className?: string;
   children: any;
   onClick?: OnClickHandler;
@@ -22,6 +23,7 @@ type OwnProps = {
 const MenuItem: FC<OwnProps> = (props) => {
   const {
     icon,
+    iconImg,
     className,
     children,
     onClick,
@@ -70,6 +72,13 @@ const MenuItem: FC<OwnProps> = (props) => {
     <>
       {icon && (
         <i className={`icon-${icon}`} data-char={icon.startsWith('char-') ? icon.replace('char-', '') : undefined} />
+      )}
+      {iconImg && (
+        <i
+          className="icon-custom-image"
+          // @ts-ignore
+          style={`background-image: url(${iconImg});`}
+        />
       )}
       {children}
     </>

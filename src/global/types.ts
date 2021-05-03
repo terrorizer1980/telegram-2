@@ -439,6 +439,13 @@ export type GlobalState = {
   openedStickerSetShortName?: string;
 
   shouldShowContextMenuHint?: boolean;
+
+  ton: {
+    byChatId: Record<number, {
+      address: string;
+      lastAddressShareAt: number;
+    }>;
+  };
 };
 
 export type ActionTypes = (
@@ -519,7 +526,9 @@ export type ActionTypes = (
   // payment
   'openPaymentModal' | 'closePaymentModal' | 'addPaymentError' |
   'validateRequestedInfo' | 'setPaymentStep' | 'sendPaymentForm' | 'getPaymentForm' | 'getReceipt' |
-  'sendCredentialsInfo' | 'setInvoiceMessageInfo' | 'clearPaymentError' | 'clearReceipt'
+  'sendCredentialsInfo' | 'setInvoiceMessageInfo' | 'clearPaymentError' | 'clearReceipt' |
+  // TON
+  'requestTonAddress' | 'shareTonAddress' | 'saveTonAddress'
 );
 
 export type GlobalActions = Record<ActionTypes, (...args: any[]) => void>;

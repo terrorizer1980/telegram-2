@@ -151,7 +151,7 @@ export interface ApiAction {
   text: string;
   targetUserIds?: number[];
   targetChatId?: number;
-  type: 'historyClear' | 'contactSignUp' | 'chatCreate' | 'other';
+  type: 'historyClear' | 'contactSignUp' | 'chatCreate' | 'other' | 'tonAddressRequest' | 'tonAddressResponse';
   photo?: ApiPhoto;
   amount?: number;
   currency?: string;

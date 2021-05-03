@@ -15,7 +15,10 @@ import {
 } from '../../../api/types';
 import { LoadMoreDirection } from '../../../types';
 
-import { MAX_MEDIA_FILES_FOR_ALBUM, MESSAGE_LIST_SLICE } from '../../../config';
+import {
+  MAX_MEDIA_FILES_FOR_ALBUM,
+  MESSAGE_LIST_SLICE,
+} from '../../../config';
 import { callApi, cancelApiProgress } from '../../../api/gramjs';
 import { areSortedArraysIntersecting, buildCollectionByKey, split } from '../../../util/iteratees';
 import {

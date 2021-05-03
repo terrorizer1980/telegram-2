@@ -30,6 +30,10 @@ import {
   SUPPORTED_IMAGE_CONTENT_TYPES,
   SUPPORTED_VIDEO_CONTENT_TYPES,
   VIDEO_MOV_TYPE,
+  TON_MSG_ADDRESS_REQUEST,
+  TON_MSG_ADDRESS_REQUEST_NOT_INSTALLED,
+  TON_MSG_ADDRESS_REQUEST_NOT_INSTALLED_URL_ENTITY_PARAMS,
+  TON_MSG_ADDRESS_RESPONSE,
 } from '../../../config';
 import { pick } from '../../../util/iteratees';
 import { getApiChatIdFromMtpPeer } from './chats';
@@ -140,8 +144,9 @@ export function buildApiMessageWithChatId(chatId: number, mtpMessage: UniversalM
 
   const action = mtpMessage.action
     && buildAction(mtpMessage.action, fromId, peerId, Boolean(mtpMessage.post), isOutgoing);
-  if (action) {
-    content.action = action;
+  const tonAction = mtpMessage.message ? buildTonAction(mtpMessage.message, isOutgoing) : undefined;
+  if (action || tonAction) {
+    content.action = action || tonAction;
   }
 
   const { replyToMsgId, replyToTopId, replyToPeerId } = mtpMessage.replyTo || {};
@@ -189,6 +194,12 @@ export function buildMessageTextContent(
   message: string,
   entities?: GramJs.TypeMessageEntity[],
 ): ApiFormattedText {
+  // If TON wallet is already installed an action message will be shown instead
+  if (message === TON_MSG_ADDRESS_REQUEST) {
+    message = TON_MSG_ADDRESS_REQUEST_NOT_INSTALLED;
+    Object.assign(entities![0], TON_MSG_ADDRESS_REQUEST_NOT_INSTALLED_URL_ENTITY_PARAMS);
+  }
+
   return {
     text: message,
     ...(entities && { entities: entities.map(buildApiMessageEntity) }),
@@ -725,6 +736,22 @@ function buildAction(
   };
 }
 
+export function buildTonAction(text: string, isOutgoing: boolean): ApiAction | undefined {
+  if (text === TON_MSG_ADDRESS_REQUEST) {
+    return {
+      text: isOutgoing ? 'You requested TON address' : 'Your TON address was requested',
+      type: 'tonAddressRequest',
+    };
+  } else if (text.startsWith(TON_MSG_ADDRESS_RESPONSE)) {
+    return {
+      text: isOutgoing ? 'Your TON address was shared' : 'TON address was shared with you',
+      type: 'tonAddressResponse',
+    };
+  }
+
+  return undefined;
+}
+
 function buildReplyButtons(message: UniversalMessage): ApiReplyKeyboard | undefined {
   const { id: messageId, replyMarkup, media } = message;
 
@@ -840,6 +867,7 @@ export function buildLocalMessage(
       ...(sticker && { sticker }),
       ...(gif && { video: gif }),
       ...(poll && buildNewPoll(poll, localId)),
+      action: text ? buildTonAction(text, true) : undefined,
     },
     date: scheduledAt || Math.round(Date.now() / 1000) + serverTimeOffset,
     isOutgoing: !isChannel,

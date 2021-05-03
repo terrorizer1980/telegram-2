@@ -190,7 +190,14 @@ export function isForwardedMessage(message: ApiMessage) {
 }
 
 export function isActionMessage(message: ApiMessage) {
-  return !!message.content.action;
+  return (
+    Boolean(message.content.action)
+    && !(
+      // We want to render normal message when TON wallet is not available,
+      // but we can not figure that out from within worker
+      message.content.action!.type === 'tonAddressRequest' && !message.isOutgoing && !(window as any).ton
+    )
+  );
 }
 
 export function isServiceNotificationMessage(message: ApiMessage) {

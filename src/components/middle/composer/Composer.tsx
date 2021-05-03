@@ -90,6 +90,7 @@ import ComposerEmbeddedMessage from './ComposerEmbeddedMessage';
 import AttachmentModal from './AttachmentModal.async';
 import BotCommandMenu from './BotCommandMenu.async';
 import PollModal from './PollModal.async';
+import TonModal from './TonModal.async';
 import DropArea, { DropAreaState } from './DropArea.async';
 import WebPagePreview from './WebPagePreview';
 import Portal from '../../ui/Portal';
@@ -229,6 +230,8 @@ const Composer: FC<OwnProps & StateProps & DispatchProps> = ({
     scheduledMessageArgs, setScheduledMessageArgs,
   ] = useState<GlobalState['messages']['contentToBeScheduled'] | undefined>();
   const { width: windowWidth } = windowSize.get();
+
+  const [isTonModalOpen, openTonModal, closeTonModal] = useFlag();
 
   // Cache for frequently updated state
   const htmlRef = useRef<string>(html);
@@ -812,6 +815,11 @@ const Composer: FC<OwnProps & StateProps & DispatchProps> = ({
         onClear={closePollModal}
         onSend={handlePollSend}
       />
+      <TonModal
+        isOpen={isTonModalOpen}
+        chatId={chatId}
+        onClear={closeTonModal}
+      />
       {renderedEditedMessage && (
         <DeleteMessageModal
           isOpen={isDeleteModalOpen}
@@ -934,7 +942,7 @@ const Composer: FC<OwnProps & StateProps & DispatchProps> = ({
           )}
           {!activeVoiceRecording && !editingMessage && (
             <ResponsiveHoverButton
-              className={isAttachMenuOpen ? 'activated' : ''}
+              className={isAttachMenuOpen ? 'activated' : undefined}
               round
               color="translucent"
               onActivate={openAttachMenu}
@@ -962,8 +970,10 @@ const Composer: FC<OwnProps & StateProps & DispatchProps> = ({
           <AttachMenu
             isOpen={isAttachMenuOpen}
             allowedAttachmentOptions={allowedAttachmentOptions}
+            canSendTons={!isChatWithSelf && isChatPrivate(chatId)}
             onFileSelect={handleFileSelect}
             onPollCreate={openPollModal}
+            onSendTons={openTonModal}
             onClose={closeAttachMenu}
           />
           {botKeyboardMessageId && (

@@ -53,7 +53,7 @@ type StateProps = {
 
 type DispatchProps = Pick<GlobalActions, (
   'openChat' | 'openTipsChat' | 'setGlobalSearchDate' | 'setGlobalSearchChatId' | 'setSettingOption'
-)>;
+  )>;
 
 const ANIMATION_LEVEL_OPTIONS = [0, 1, 2];
 

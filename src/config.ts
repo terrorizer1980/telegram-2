@@ -164,3 +164,13 @@ export const LIGHT_THEME_BG_COLOR = '#A2AF8E';
 export const DARK_THEME_BG_COLOR = '#0F0F0F';
 export const DARK_THEME_PATTERN_COLOR = '#0a0a0a8c';
 export const DEFAULT_PATTERN_COLOR = 'rgba(90, 110, 70, 0.6)';
+
+// TON magic messages
+export const TON_INSTALL_WALLET_URL = 'https://tonwallet.me/plugin';
+// eslint-disable-next-line max-len
+export const TON_MSG_ADDRESS_REQUEST = 'I want to send you TON coins. Please use https://toncoin.org/app to share your wallet address.';
+// eslint-disable-next-line max-len
+export const TON_MSG_ADDRESS_REQUEST_NOT_INSTALLED = `I want to send you TON coins. Please install TON wallet Chrome extension from ${TON_INSTALL_WALLET_URL} and refresh the page to share your wallet address.`;
+// eslint-disable-next-line max-len
+export const TON_MSG_ADDRESS_REQUEST_NOT_INSTALLED_URL_ENTITY_PARAMS = { offset: 78, length: TON_INSTALL_WALLET_URL.length };
+export const TON_MSG_ADDRESS_RESPONSE = 'Here is my TON address: ';
